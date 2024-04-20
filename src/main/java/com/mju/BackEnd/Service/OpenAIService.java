@@ -60,7 +60,7 @@ public class OpenAIService {
                 .block(); // Blocking call to get the response synchronously
 
         if (response != null && response.getData() != null && !response.getData().isEmpty()) {
-            return new GenerateTemplate(response.getData().get(0).getRevised_prompt(),response.getData().get(0).getUrl());
+            return new GenerateTemplate(prompt,response.getData().get(0).getUrl());
         } else {
             return null; // Handle the case where no URL is available
         }
