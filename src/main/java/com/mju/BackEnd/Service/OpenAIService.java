@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import java.lang.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("OpenAIService")
@@ -23,34 +24,46 @@ public class OpenAIService {
         this.webClient = webClientBuilder.baseUrl(OPENAI_API_URL).build();
     }
 
-    public Mono<String> generateResponse(String prompt) {
+    public String generateResponse(String prompt) {
+        String option = " summarize as tags";
         OpenAIChatRequest requestDTO = new OpenAIChatRequest(
                 "gpt-4-turbo-2024-04-09",
                 List.of(
                         new OpenAIChatRequest.Message("system", "You are a helpful assistant."),
-                        new OpenAIChatRequest.Message("user", prompt)
+                        new OpenAIChatRequest.Message("user", prompt+option)
                 )
         );
 
-        return webClient.post()
+        OpenAIChatResponse response =  webClient.post()
                 .uri("/chat/completions")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + OPENAI_API_KEY)
                 .body(BodyInserters.fromValue(requestDTO))
                 .retrieve()
-                .bodyToMono(String.class);
-    }
-    public Mono<String> generateImage(String prompt) {
-        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3",prompt, 1, "1024x1024");
+                .bodyToMono(OpenAIChatResponse.class)
+                .block();
 
-        return webClient.post()
+        return response.getChoices().get(0).getMessage().getContent();
+
+    }
+    public GenerateTemplate generateImage(String prompt) {
+        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", prompt, 1, "1024x1024");
+
+        // WebClient 요청을 설정합니다.
+        OpenAIImageResponse response = webClient.post()
                 .uri("/images/generations")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + OPENAI_API_KEY)
                 .body(BodyInserters.fromValue(requestImageDTO))
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(OpenAIImageResponse.class)
+                .block(); // Blocking call to get the response synchronously
+
+        if (response != null && response.getData() != null && !response.getData().isEmpty()) {
+            return new GenerateTemplate(response.getData().get(0).getRevised_prompt(),response.getData().get(0).getUrl());
+        } else {
+            return null; // Handle the case where no URL is available
+        }
+    }
     }
 
-
-}
