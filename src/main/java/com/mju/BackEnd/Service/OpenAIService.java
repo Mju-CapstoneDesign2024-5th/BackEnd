@@ -47,7 +47,7 @@ public class OpenAIService {
 
     }
     public GenerateTemplate generateImage(String prompt) {
-        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", prompt, 5, "1024x1024");
+        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", prompt, 1, "1024x1024");
 
         // WebClient 요청을 설정합니다.
         OpenAIImageResponse response = webClient.post()
