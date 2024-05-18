@@ -6,11 +6,14 @@ public class OpenAIImageRequest {
     private int n;
     private String size;
 
+
+
     public OpenAIImageRequest(String model, String prompt, int n, String size) {
         this.model = model;
         this.prompt = prompt;
         this.n = n;
         this.size = size;
+
     }
 
     public String getModel() {
@@ -44,4 +47,6 @@ public class OpenAIImageRequest {
     public void setSize(String size) {
         this.size = size;
     }
+
+
 }
