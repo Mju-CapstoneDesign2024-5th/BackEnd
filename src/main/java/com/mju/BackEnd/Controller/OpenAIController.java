@@ -38,11 +38,16 @@ public class OpenAIController {
     }
 
     @GetMapping("/kin")
-    public List<String> searchKin(@RequestBody String query) { return nService.searchKin(query);}
-
-    @PostMapping("/one")
-    public String iSearch(@RequestBody String query) throws JsonProcessingException {
-        List<String> descriptions = nService.searchKin(query);
+    public List<String> searchKin(@RequestBody SearchRequest request) {
+        String query = request.getQuery();
+        String sort = request.getSort();
+        return nService.searchKin(query, sort);
+    }
+    @PostMapping("/search")
+    public String iSearch(@RequestBody SearchRequest request) throws JsonProcessingException {
+        String query = request.getQuery();
+        String sort = request.getSort();
+        List<String> descriptions = nService.searchKin(query, sort);
         List<GenerateTemplate> series = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 

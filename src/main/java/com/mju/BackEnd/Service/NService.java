@@ -29,7 +29,7 @@ public class NService {
 
     }
 
-    public List<String> searchKin(String query) {
+    public List<String> searchKin(String query, String sort){
         List<String> descriptions = new ArrayList<>();
         KinResponse response = webClient.get()
                 .uri(uriBuilder ->
@@ -38,7 +38,7 @@ public class NService {
                                 .queryParam("query", query)
                                 .queryParam("display", 5)
                                 .queryParam("start", 1)
-                                .queryParam("sort", "sim")
+                                .queryParam("sort", sort)
                                 .build())
                 .header("X-Naver-Client-Id", API_ID)
                 .header("X-Naver-Client-Secret", API_KEY)
@@ -52,5 +52,8 @@ public class NService {
         return descriptions;
     }
 
+    public List<String> searchKin(String query){
+        return searchKin(query, "sim");
+    }
 
 }
