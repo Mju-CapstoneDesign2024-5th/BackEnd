@@ -30,11 +30,16 @@ public class OpenAIService {
         String[] keys = OPENAI_API_KEY.split(",");
         String API_KEY = keys[currentIndex];
         String option = "태그의 형태로 요약해줘 태그 앞에는 무조건 #을 붙여야해";
-        OpenAIChatRequest requestDTO = new OpenAIChatRequest(
+	String assist1 = "죄송합니다를 출력금지";
+	String assist2 = "#뒤에 붙는 각 태그당  10글자로 제한";
+
+	OpenAIChatRequest requestDTO = new OpenAIChatRequest(
                 "gpt-4o",
                 List.of(
                         new OpenAIChatRequest.Message("system", option),
-                        new OpenAIChatRequest.Message("user", prompt)
+                        new OpenAIChatRequest.Message("user", prompt),
+			new OpenAIChatRequest.Message("assistant", assist1),
+			new OpenAIChatRequest.Message("assistant", assist2)
                 )
         );
 
