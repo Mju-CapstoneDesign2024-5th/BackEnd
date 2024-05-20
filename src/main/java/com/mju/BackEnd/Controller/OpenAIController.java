@@ -31,11 +31,6 @@ public class OpenAIController {
     }
 
 
-    @PostMapping("/chat")
-    public Mono<String> aiRequest(@RequestBody String prompt){
-        return openAIService.generateResponse(prompt, 3);
-    }
-
     @PostMapping("/search")
     public Mono<ResponseEntity<String>> iSearch(@RequestBody SearchRequest request) {
         String query = request.getQuery();

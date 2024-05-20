@@ -29,8 +29,8 @@ public class NService {
 
     }
 
-    public List<String> searchKin(String query, String sort){
-        List<String> descriptions = new ArrayList<>();
+    public List<KinDescription> searchKin(String query, String sort){
+        List<KinDescription> descriptions = new ArrayList<>();
         KinResponse response = webClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
@@ -47,12 +47,12 @@ public class NService {
                 .block();
 
         for(KinResponse.SearchItem item : response.getItems()){
-            descriptions.add(item.getDescription());
+            descriptions.add(new KinDescription(item.getTitle().replace("<b>", "").replace("</b>",""), item.getLink(), item.getDescription()));
         }
         return descriptions;
     }
 
-    public List<String> searchKin(String query){
+    public List<KinDescription> searchKin(String query){
         return searchKin(query, "sim");
     }
 
