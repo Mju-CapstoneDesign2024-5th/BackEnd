@@ -15,8 +15,8 @@ import java.util.List;
 
 @RestController
 public class questionController {
-
-    @RequestMapping("/")
+        @CrossOrigin(origins = "http://localhost:3000")
+        @RequestMapping("/main")
     public ResponseEntity<?> root() {
         List<GenerateTemplate> templates = List.of(
                 new GenerateTemplate(
