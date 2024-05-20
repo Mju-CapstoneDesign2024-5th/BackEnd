@@ -7,8 +7,9 @@ import com.mju.BackEnd.Dto.*;
 import com.mju.BackEnd.Service.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class questionController {
 
     @RequestMapping("/")
-    public String root() {
+    public ResponseEntity<?> root() {
         List<GenerateTemplate> templates = List.of(
                 new GenerateTemplate(
                         new KinDescription("maroon5노래 중 payphone에 대해 질문입니다...",
@@ -457,6 +458,7 @@ public class questionController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return ret;
+            return new ResponseEntity<>(ret, HttpStatus.OK);
+
     }
 }
