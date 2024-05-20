@@ -64,7 +64,7 @@ public class OpenAIService {
 
 
     public Mono<GenerateTemplate> generateImage(KinDescription question, int currentIndex) {
-        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-2", question.getDescription(), 1, "1024x1024");
+        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", question.getDescription(), 1, "1024x1024");
         String[] keys = OPENAI_API_KEY.split(",");
         String API_KEY = keys[currentIndex];
         // WebClient 요청을 설정합니다.
