@@ -11,20 +11,19 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.atomic.AtomicInteger;;
 @RestController
-public class OpenAIController {
+public class searchController {
     private final OpenAIService openAIService;
     private final NService nService;
     private final ObjectMapper objectMapper;
 
 
     @Autowired
-    public OpenAIController(OpenAIService openAIService, NService nService,ObjectMapper objectMapper) {
+    public searchController(OpenAIService openAIService, NService nService, ObjectMapper objectMapper) {
         this.openAIService = openAIService;
         this.nService = nService;
         this.objectMapper = objectMapper;
