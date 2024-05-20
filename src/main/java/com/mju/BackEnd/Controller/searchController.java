@@ -30,6 +30,7 @@ public class searchController {
     }
 
 
+
     @PostMapping("/search")
     public Mono<ResponseEntity<String>> iSearch(@RequestBody SearchRequest request) {
         String query = request.getQuery();

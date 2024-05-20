@@ -4,8 +4,7 @@ package com.mju.BackEnd.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import org.springframework.web.util.UriComponentsBuilder;
+
 import org.springframework.beans.factory.annotation.Value;
 import com.mju.BackEnd.Dto.*;
 
@@ -14,8 +13,6 @@ import java.util.List;
 @Service("NService")
 public class NService {
     private final WebClient webClient;
-
-
 
     private static final String API_URL = "https://openapi.naver.com/v1";
     private static final String API_ID = "sZR0jmY7HJcPVfVtOPQ1";
