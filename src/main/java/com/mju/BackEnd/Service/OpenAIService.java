@@ -64,12 +64,20 @@ public class OpenAIService {
 
 
     public Mono<GenerateTemplate> generateImage(KinDescription question, int currentIndex) {
-        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", question.getDescription(), 1, "1024x1024");
+        // API 키 배열에서 유효한 인덱스를 사용하고 있는지 확인합니다.
         String[] keys = OPENAI_API_KEY.split(",");
+        if (currentIndex < 0 || currentIndex >= keys.length) {
+            return Mono.error(new IllegalArgumentException("Invalid API key index"));
+        }
+
         String API_KEY = keys[currentIndex];
+
+        // OpenAIImageRequest 객체를 생성합니다.
+        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", question.getDescription(), 1, "1024x1024");
+
         // WebClient 요청을 설정합니다.
         return webClient.post()
-                .uri("/images/generations")
+                .uri("https://api.openai.com/v1/images/generations")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + API_KEY)
                 .body(BodyInserters.fromValue(requestImageDTO))
@@ -81,6 +89,10 @@ public class OpenAIService {
                     } else {
                         return null;
                     }
+                })
+                .onErrorResume(error -> {
+                    error.printStackTrace();
+                    return Mono.just(null);
                 });
     }
     }
