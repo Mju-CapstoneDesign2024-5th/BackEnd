@@ -8,8 +8,9 @@ import com.mju.BackEnd.Service.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import java.util.List;
 
@@ -458,7 +459,7 @@ public class questionController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-            return new ResponseEntity<>(ret, HttpStatus.OK);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ret);
 
     }
 }

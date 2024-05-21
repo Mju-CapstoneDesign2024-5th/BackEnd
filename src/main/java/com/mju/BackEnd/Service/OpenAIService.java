@@ -56,7 +56,7 @@ public class OpenAIService {
                     if (response != null) {
                         return new KinDescription(description.getTitle(), description.getLink(), response.getChoices().get(0).getMessage().getContent());
                     } else {
-                        return null; // Handle the case where no URL is available
+                        return null;
                     }
                 });
 
@@ -79,7 +79,7 @@ public class OpenAIService {
                     if (response != null && response.getData() != null && !response.getData().isEmpty()) {
                         return new GenerateTemplate(question, response.getData().get(0).getUrl());
                     } else {
-                        return null; // Handle the case where no URL is available
+                        return null;
                     }
                 });
     }

@@ -14,6 +14,8 @@ import java.time.Duration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;;
 @RestController
 public class searchController {
@@ -29,8 +31,22 @@ public class searchController {
         this.objectMapper = objectMapper;
     }
 
+    @PostMapping("/test")
+    public String justTest(@RequestBody SearchRequest request) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String query = request.getQuery();
+            String sort = request.getSort();
+            List<KinDescription> temp = nService.searchKin(query, sort);
+            GenerateTemplate ret = new GenerateTemplate(temp.get(0), "");
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ret);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "{\"error\": \"JSON processing error\"}";
+        }
+    }
 
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/search")
     public Mono<ResponseEntity<String>> iSearch(@RequestBody SearchRequest request) {
         String query = request.getQuery();
@@ -41,7 +57,7 @@ public class searchController {
                 .flatMap(batch -> {
                     int currentIndex = bufferIndex.getAndIncrement();
                     return Flux.fromIterable(batch)
-                            .flatMap(description -> Mono.delay(Duration.ofMillis(10)) // 각 요청별로 1초 딜레이
+                            .flatMap(description -> Mono.delay(Duration.ofMillis(10))
                                     .then(openAIService.generateResponse(description, currentIndex))
                                     .flatMap(response -> openAIService.generateImage(response, currentIndex)))
                             .collectList();
