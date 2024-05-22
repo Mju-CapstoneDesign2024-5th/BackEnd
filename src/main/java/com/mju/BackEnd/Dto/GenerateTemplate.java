@@ -9,10 +9,73 @@ public class GenerateTemplate {
     private String description;
     private String srcLink;
     private String url;
+    private List<String> questionDetails;
+    private List<String> answerDetails;
 
     // Getter for title
     public String getTitle() {
         return title;
+    }
+
+    // Setter for title
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    // Getter for description
+    public String getDescription() {
+        return description;
+    }
+
+    // Setter for description
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    // Getter for srcLink
+    public String getSrcLink() {
+        return srcLink;
+    }
+
+    // Setter for srcLink
+    public void setSrcLink(String srcLink) {
+        this.srcLink = srcLink;
+    }
+
+    // Getter for url
+    public String getUrl() {
+        return url;
+    }
+
+    // Setter for url
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public List<String> getQuestionDetails() {
+        return questionDetails;
+    }
+
+    public void setQuestionDetails(List<String> questionDetails) {
+        this.questionDetails = questionDetails;
+    }
+
+    public List<String> getAnswerDetails() {
+        return answerDetails;
+    }
+
+    public void setAnswerDetails(List<String> answerDetails) {
+        this.answerDetails = answerDetails;
+    }
+
+    // Getter for id
+    public String getID(){
+        return id;
+    }
+
+    // Setter for id
+    public void setID(String id){
+        this.id = id;
     }
 
     public GenerateTemplate(KinDescription description, String url) {
@@ -47,48 +110,5 @@ public class GenerateTemplate {
         }
 
         return d1id + dirId + docId;
-    }
-
-    public String getID(){
-        return id;
-    }
-
-    public void setID(String id){
-        this.id = id;
-    }
-
-    // Setter for title
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    // Getter for description
-    public String getDescription() {
-        return description;
-    }
-
-    // Setter for description
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    // Getter for srcUrl
-    public String getsrcLink() {
-        return srcLink;
-    }
-
-    // Setter for srcUrl
-    public void setsrcLink(String srcUrl) {
-        this.srcLink = srcUrl;
-    }
-
-    // Getter for url
-    public String getUrl() {
-        return url;
-    }
-
-    // Setter for url
-    public void setUrl(String url) {
-        this.url = url;
     }
 }
