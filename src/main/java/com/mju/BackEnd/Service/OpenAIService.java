@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
 import java.lang.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,10 +67,11 @@ public class OpenAIService {
 
 
     public Mono<GenerateTemplate> generateImage(KinDescription question, int currentIndex) {
-        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", question.getDescription(), 1, "1024x1024");
+        OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", question.getDescription()+" safety system에 위배되지 않게", 1, "1024x1024");
         String[] keys = OPENAI_API_KEY.split(",");
         String API_KEY = keys[currentIndex];
-        // WebClient 요청을 설정합니다.
+        System.out.println(question.getDescription());
+
         return webClient.post()
                 .uri("/images/generations")
                 .header("Content-Type", "application/json")
@@ -77,10 +81,23 @@ public class OpenAIService {
                 .bodyToMono(OpenAIImageResponse.class)
                 .map(response -> {
                     if (response != null && response.getData() != null && !response.getData().isEmpty()) {
+                        System.out.println("Success: " + currentIndex);
                         return new GenerateTemplate(question, response.getData().get(0).getUrl());
                     } else {
                         return null;
                     }
+                })
+                .onErrorResume(throwable -> {
+                    if (throwable instanceof WebClientResponseException) {
+                        WebClientResponseException e = (WebClientResponseException) throwable;
+                        if (e.getStatusCode().is4xxClientError()) {
+
+                            System.out.println("Request failed after multiple retries: " + currentIndex);
+                            System.out.println(question.getDescription());
+                            System.out.println("Error response: " + e.getResponseBodyAsString());
+                        }
+                    }
+                    return Mono.empty();
                 });
     }
     }
