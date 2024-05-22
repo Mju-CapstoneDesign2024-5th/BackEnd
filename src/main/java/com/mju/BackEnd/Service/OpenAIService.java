@@ -27,6 +27,7 @@ public class OpenAIService {
     @Autowired
     public OpenAIService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(OPENAI_API_URL).build();
+
     }
 
 
@@ -81,7 +82,6 @@ public class OpenAIService {
                 .bodyToMono(OpenAIImageResponse.class)
                 .map(response -> {
                     if (response != null && response.getData() != null && !response.getData().isEmpty()) {
-                        System.out.println("Success: " + currentIndex);
                         return new GenerateTemplate(question, response.getData().get(0).getUrl());
                     } else {
                         return null;
@@ -97,7 +97,7 @@ public class OpenAIService {
                             System.out.println("Error response: " + e.getResponseBodyAsString());
                         }
                     }
-                    return Mono.empty();
+                    return Mono.just(new GenerateTemplate(question, "https://media.istockphoto.com/id/674612468/ko/%EB%B2%A1%ED%84%B0/%ED%88%AC%EB%AA%85-%EC%97%86%EC%9D%8C-%EA%B8%B0%ED%98%B8-%EC%95%84%EC%9D%B4%EC%BD%98-%EB%B2%A1%ED%84%B0.jpg?s=1024x1024&w=is&k=20&c=nX_-5-q41tDe5jrrW-9m8jh6KQSsiOx3H-XqhlAPJKI="));
                 });
     }
     }

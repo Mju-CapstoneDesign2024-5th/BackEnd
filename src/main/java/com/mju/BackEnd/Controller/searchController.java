@@ -78,5 +78,34 @@ public class searchController {
                 });
     }
 
+    @PostMapping("/chat")
+    public Mono<ResponseEntity<String>> dSearch(@RequestBody SearchRequest request) {
+        String query = request.getQuery();
+        String sort = request.getSort();
+        AtomicInteger bufferIndex = new AtomicInteger(0);
+        return Flux.fromIterable(nService.searchKin(query, sort))
+                .buffer(5) // 5개씩 묶어서 처리
+                .flatMap(batch -> {
+                    int currentIndex = bufferIndex.getAndIncrement();
+                    return Flux.fromIterable(batch)
+                            .flatMap(description -> Mono.delay(Duration.ofMillis(10))
+                                    .then(openAIService.generateResponse(description, currentIndex)))
+                            .collectList();
+                })
+                .collectList()
+                .map(seriesOfBatches -> {
+                    try {
+                        String jsonResponse = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(seriesOfBatches);
+                        return ResponseEntity.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(jsonResponse);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error processing JSON", e);
+                    }
+                });
+    }
+
+
+
 
 }
