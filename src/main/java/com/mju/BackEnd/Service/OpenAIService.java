@@ -9,7 +9,13 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
+import reactor.netty.tcp.TcpClient;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+
+import java.time.Duration;
+import java.util.List;
 
 import java.lang.*;
 import java.util.ArrayList;
@@ -26,7 +32,12 @@ public class OpenAIService {
 
     @Autowired
     public OpenAIService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl(OPENAI_API_URL).build();
+        this.webClient = webClientBuilder
+                .baseUrl(OPENAI_API_URL)
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create().responseTimeout(Duration.ofSeconds(300)) // 타임아웃 설정
+                ))
+                .build();
 
     }
 
@@ -62,7 +73,18 @@ public class OpenAIService {
                     } else {
                         return null;
                     }
-                });
+                })
+                .doOnError(throwable -> {
+                    if (throwable instanceof WebClientResponseException) {
+                        WebClientResponseException e = (WebClientResponseException) throwable;
+                        System.out.println("Request failed: " + currentIndex);
+                        System.out.println(description.getDescription());
+                        System.out.println("Error response: " + e.getResponseBodyAsString());
+                    } else {
+                        System.out.println("An unexpected error occurred: " + throwable.getMessage());
+                    }
+                })
+                .onErrorResume(throwable -> Mono.just(new KinDescription(description.getTitle(), description.getLink(), "An error occurred while processing the request.")));
 
     }
 
@@ -87,16 +109,17 @@ public class OpenAIService {
                         return null;
                     }
                 })
-                .onErrorResume(throwable -> {
+                .doOnError(throwable -> {
                     if (throwable instanceof WebClientResponseException) {
                         WebClientResponseException e = (WebClientResponseException) throwable;
-                        if (e.getStatusCode().is4xxClientError()) {
-
-                            System.out.println("Request failed after multiple retries: " + currentIndex);
-                            System.out.println(question.getDescription());
-                            System.out.println("Error response: " + e.getResponseBodyAsString());
-                        }
+                        System.out.println("Request failed: " + currentIndex);
+                        System.out.println(question.getDescription());
+                        System.out.println("Error response: " + e.getResponseBodyAsString());
+                    } else {
+                        System.out.println("An unexpected error occurred: " + throwable.getMessage());
                     }
+                })
+                .onErrorResume(throwable -> {
                     return Mono.just(new GenerateTemplate(question, "https://media.istockphoto.com/id/674612468/ko/%EB%B2%A1%ED%84%B0/%ED%88%AC%EB%AA%85-%EC%97%86%EC%9D%8C-%EA%B8%B0%ED%98%B8-%EC%95%84%EC%9D%B4%EC%BD%98-%EB%B2%A1%ED%84%B0.jpg?s=1024x1024&w=is&k=20&c=nX_-5-q41tDe5jrrW-9m8jh6KQSsiOx3H-XqhlAPJKI="));
                 });
     }

@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 import com.mju.BackEnd.Config.*;
 @RestController
 public class questionController {
-        @RequestMapping("/")
+        @RequestMapping("/main")
     public ResponseEntity<?> root() {
                 List<GenerateTemplate> templates = IntStream.range(0, 60)
                         .mapToObj(i -> {
