@@ -4,6 +4,7 @@ import com.mju.BackEnd.Dto.*;
 import com.mju.BackEnd.Dto.GenerateTemplate;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -29,15 +30,31 @@ public class WebCrawlService {
             Document doc = Jsoup.connect(source.getSrcLink()).get();
             Elements questionElements = doc.select(".questionDetail");
             Elements answerElements = doc.select(".answerDetail");
+            Elements infoElement = doc.select(".userInfo .infoItem");
 
+            infoElement.text();
             List<String> questionDetails = new ArrayList<>();
             List<String> answerDetails = new ArrayList<>();
+            String view="";
+            String date="";
 
+            for (Element element : infoElement) {
+                String text = element.text();
+                if (text.contains("작성일")) {
+                    date = text.replace("작성일", "").trim();
+                } else if (text.contains("조회수")) {
+                    view = text.replace("조회수", "").trim();
+                }
+            }
+
+            System.out.println(date + " " + view);
             questionElements.forEach(element -> questionDetails.add(element.text()));
             answerElements.forEach(element -> answerDetails.add(element.text()));
 
             source.setQuestionDetails(questionDetails);
             source.setAnswerDetails(answerDetails);
+            source.setView(view);
+            source.setDate(date);
             return source;
         });
     }

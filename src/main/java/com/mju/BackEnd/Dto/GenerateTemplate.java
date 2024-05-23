@@ -6,11 +6,23 @@ public class GenerateTemplate {
 
     private String id;
     private String title;
+    private String date;
+    private String view;
     private String description;
     private String srcLink;
     private String url;
     private List<String> questionDetails;
     private List<String> answerDetails;
+
+    // Getter for id
+    public String getID() {
+        return id;
+    }
+
+    // Setter for id
+    public void setID(String id) {
+        this.id = id;
+    }
 
     // Getter for title
     public String getTitle() {
@@ -20,6 +32,26 @@ public class GenerateTemplate {
     // Setter for title
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    // Getter for date
+    public String getDate() {
+        return date;
+    }
+
+    // Setter for date
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    // Getter for view
+    public String getView() {
+        return view;
+    }
+
+    // Setter for view
+    public void setView(String view) {
+        this.view = view;
     }
 
     // Getter for description
@@ -52,30 +84,24 @@ public class GenerateTemplate {
         this.url = url;
     }
 
+    // Getter for questionDetails
     public List<String> getQuestionDetails() {
         return questionDetails;
     }
 
+    // Setter for questionDetails
     public void setQuestionDetails(List<String> questionDetails) {
         this.questionDetails = questionDetails;
     }
 
+    // Getter for answerDetails
     public List<String> getAnswerDetails() {
         return answerDetails;
     }
 
+    // Setter for answerDetails
     public void setAnswerDetails(List<String> answerDetails) {
         this.answerDetails = answerDetails;
-    }
-
-    // Getter for id
-    public String getID(){
-        return id;
-    }
-
-    // Setter for id
-    public void setID(String id){
-        this.id = id;
     }
 
     public GenerateTemplate(KinDescription description, String url) {
