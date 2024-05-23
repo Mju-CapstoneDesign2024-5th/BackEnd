@@ -48,7 +48,7 @@ public class searchController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+
     @PostMapping("/search")
     public Mono<ResponseEntity<String>> iSearch(@RequestBody SearchRequest request) {
         String query = request.getQuery();

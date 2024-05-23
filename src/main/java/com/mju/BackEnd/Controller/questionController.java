@@ -3,6 +3,7 @@ package com.mju.BackEnd.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mju.BackEnd.Dto.*;
+import com.mju.BackEnd.Config.*;
 
 import com.mju.BackEnd.Service.*;
 
@@ -16,10 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
+import com.mju.BackEnd.Config.*;
 @RestController
 public class questionController {
-        @CrossOrigin(origins = "http://localhost:3000")
         @RequestMapping("/")
     public ResponseEntity<?> root() {
                 List<GenerateTemplate> templates = IntStream.range(0, 60)
