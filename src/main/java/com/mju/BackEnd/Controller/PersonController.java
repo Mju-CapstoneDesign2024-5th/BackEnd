@@ -1,3 +1,4 @@
+/*
 package com.mju.BackEnd.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,3 +41,4 @@ public class PersonController {
     }
 }
 
+*/

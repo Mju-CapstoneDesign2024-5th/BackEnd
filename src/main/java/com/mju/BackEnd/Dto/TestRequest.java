@@ -1,4 +1,5 @@
 package com.mju.BackEnd.Dto;
+
 public class TestRequest {
 
     private long id;

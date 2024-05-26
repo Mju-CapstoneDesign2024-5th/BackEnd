@@ -2,20 +2,18 @@ package com.mju.BackEnd.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity //엔티티 정의
-@Table(name="Favorites") //사용하지 않으면 클래스 이름이 테이블 이름이 됨
-@Getter //lombok getter
-@Setter //lombok setter
+@Entity
+@Table(name = "favorites_table")
+@Getter
+@Setter
 public class Favorites {
-    @Id //기본키를 의미. 반드시 기본키를 가져야함.
-    @NonNull
-    private Long User_id;
-
     @Id
-    @Column(unique = true)
-    private String Kin_id;
-}
+    @Column(name = "user_id", nullable = false, unique = true)
+    private String userId;
 
+    @Column(name = "favorites_id", nullable = false)
+    private String favoritesId; // detail_id와 연결되어야함.
+}
