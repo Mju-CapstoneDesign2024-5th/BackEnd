@@ -12,7 +12,7 @@ import lombok.Setter;
 public class Contents {
 
     @Id //기본키를 의미. 반드시 기본키를 가져야함.
-    @Column(name = "detail_id", nullable = false)
+    @Column(name = "contents_id", nullable = false)
     private String id;//본문 Id
 
     @Column(name = "title")

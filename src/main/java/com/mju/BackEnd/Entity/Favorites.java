@@ -9,13 +9,21 @@ import lombok.Setter;
 @Table(name = "favorites_table")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Favorites {
+
     @Id
     @Column(name = "user_id", nullable = false, unique = true)
     private String userId;
 
-    @Column(name = "favorites_id", nullable = false)
-    private String favoritesId; // detail_id와 연결되어야함.
-}
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private User user;
 
-//두개를 동시에
+    @Column(name = "contents_id", nullable = false)
+    private String contentsId;
+
+    @ManyToOne
+    @JoinColumn(name = "contents_id", referencedColumnName = "contents_id", insertable = false, updatable = false)
+    private Contents contents;
+}

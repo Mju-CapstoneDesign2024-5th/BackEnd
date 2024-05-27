@@ -12,7 +12,7 @@ import lombok.Setter;
 public class User {
     @Id//기본키를 의미. 반드시 기본키를 가져야함.
     @Column(name = "user_id", nullable = false, unique = true)
-    private String id;
+    private String userId;
 
     @Column(name = "user_name", nullable = false)
     private String userName;

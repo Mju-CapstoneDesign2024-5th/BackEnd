@@ -1,3 +1,4 @@
+/*
 package com.mju.BackEnd.Controller;
 
 import com.mju.BackEnd.Entity.Contents;
@@ -37,3 +38,4 @@ public class ContentsController {
     }
 }
 
+*/

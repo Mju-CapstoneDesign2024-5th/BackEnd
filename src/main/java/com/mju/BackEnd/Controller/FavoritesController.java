@@ -1,5 +1,7 @@
+/*
 package com.mju.BackEnd.Controller;
 
+import com.mju.BackEnd.Dto.ContentsRequest;
 import com.mju.BackEnd.Entity.Contents;
 import com.mju.BackEnd.Entity.Favorites;
 import com.mju.BackEnd.Repository.*;
@@ -25,17 +27,18 @@ public class FavoritesController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("success");
     }
     @PostMapping("/favorites/find")
-    public ResponseEntity<?> favoritesSearch(@RequestBody Favorites favorites) {
-        String userId = favorites.getUserId();
-        String favoritesId = favorites.getFavoritesId();
+    public ResponseEntity<?> favoritesSearch(@RequestBody ContentsRequest contentsRequest) {
+        String userId = contentsRequest.getId();
 
-        if (userId == null || favoritesId == null) {
-            return ResponseEntity.badRequest().body("Both userId and favoritesId are required.");
+        Optional<Favorites> foundFavorites = favoritesRepository.findById(Long.parseLong(contentsRequest.getId()));
+
+        if (foundFavorites.isEmpty()) {
+            return ResponseEntity.badRequest().body("Search failed");
         }
 
-        Optional<Favorites> foundFavorites = favoritesRepository.findByUserIdAndFavoritesId(userId, favoritesId);
 
         return foundFavorites.map(value -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(value))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
+*/
