@@ -1,12 +1,8 @@
 package com.mju.BackEnd.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mju.BackEnd.Dto.TestRequest;
 import com.mju.BackEnd.Entity.Contents;
 import com.mju.BackEnd.Repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
