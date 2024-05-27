@@ -23,12 +23,14 @@ public class searchController {
     private final NService nService;
     private final ObjectMapper objectMapper;
 
+    private final WebCrawlService webCrawlService;
 
     @Autowired
-    public searchController(OpenAIService openAIService, NService nService, ObjectMapper objectMapper) {
+    public searchController(OpenAIService openAIService, NService nService, ObjectMapper objectMapper, WebCrawlService webCrawlService) {
         this.openAIService = openAIService;
         this.nService = nService;
         this.objectMapper = objectMapper;
+        this.webCrawlService = webCrawlService;
     }
 
     @PostMapping("/test")
@@ -46,7 +48,7 @@ public class searchController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+
     @PostMapping("/search")
     public Mono<ResponseEntity<String>> iSearch(@RequestBody SearchRequest request) {
         String query = request.getQuery();
@@ -59,7 +61,8 @@ public class searchController {
                     return Flux.fromIterable(batch)
                             .flatMap(description -> Mono.delay(Duration.ofMillis(10))
                                     .then(openAIService.generateResponse(description, currentIndex))
-                                    .flatMap(response -> openAIService.generateImage(response, currentIndex)))
+                                    .flatMap(response -> openAIService.generateImage(response, currentIndex))
+                                    .flatMap(imageResponse -> webCrawlService.getData(imageResponse)))
                             .collectList();
                 })
                 .collectList()
@@ -74,6 +77,35 @@ public class searchController {
                     }
                 });
     }
+
+    @PostMapping("/chat")
+    public Mono<ResponseEntity<String>> dSearch(@RequestBody SearchRequest request) {
+        String query = request.getQuery();
+        String sort = request.getSort();
+        AtomicInteger bufferIndex = new AtomicInteger(0);
+        return Flux.fromIterable(nService.searchKin(query, sort))
+                .buffer(5) // 5개씩 묶어서 처리
+                .flatMap(batch -> {
+                    int currentIndex = bufferIndex.getAndIncrement();
+                    return Flux.fromIterable(batch)
+                            .flatMap(description -> Mono.delay(Duration.ofMillis(10))
+                                    .then(openAIService.generateResponse(description, currentIndex)))
+                            .collectList();
+                })
+                .collectList()
+                .map(seriesOfBatches -> {
+                    try {
+                        String jsonResponse = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(seriesOfBatches);
+                        return ResponseEntity.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(jsonResponse);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Error processing JSON", e);
+                    }
+                });
+    }
+
+
 
 
 }

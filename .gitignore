@@ -121,5 +121,4 @@ application-api.properties
 /build/
 .graldetasknamecache
 
-/images/
 # End of https://www.toptal.com/developers/gitignore/api/intellij
