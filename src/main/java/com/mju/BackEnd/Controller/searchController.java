@@ -25,8 +25,12 @@ public class searchController {
 
     private final WebCrawlService webCrawlService;
 
+
+    private final ImageService imageService;
+
     @Autowired
-    public searchController(OpenAIService openAIService, NService nService, ObjectMapper objectMapper, WebCrawlService webCrawlService) {
+    public searchController(ImageService imageService, OpenAIService openAIService, NService nService, ObjectMapper objectMapper, WebCrawlService webCrawlService) {
+        this.imageService = imageService;
         this.openAIService = openAIService;
         this.nService = nService;
         this.objectMapper = objectMapper;
@@ -62,7 +66,8 @@ public class searchController {
                             .flatMap(description -> Mono.delay(Duration.ofMillis(10))
                                     .then(openAIService.generateResponse(description, currentIndex))
                                     .flatMap(response -> openAIService.generateImage(response, currentIndex))
-                                    .flatMap(imageResponse -> webCrawlService.getData(imageResponse)))
+                                    .flatMap(imageResponse -> webCrawlService.getData(imageResponse))
+                                    .flatMap(imageDownload-> imageService.downloadImage(imageDownload)))
                             .collectList();
                 })
                 .collectList()
