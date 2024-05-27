@@ -116,6 +116,10 @@ fabric.properties
 
 application-api.properties
 
-.build
+#gralde
+.gralde
+/build/
+.graldetasknamecache
 
+/images/
 # End of https://www.toptal.com/developers/gitignore/api/intellij
