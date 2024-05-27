@@ -6,6 +6,7 @@ import com.mju.BackEnd.Dto.TestRequest;
 import com.mju.BackEnd.Entity.Contents;
 import com.mju.BackEnd.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,15 +29,15 @@ public class ContentsController {
     }
 
 
-/*    @PostMapping("/contents/find")
+    @PostMapping("/contents/find")
     public ResponseEntity<?> contentsSearch(@RequestBody Contents contents) {
-        // 데이터베이스에서 Detail_Id로 Contents 객체를 찾습니다.
-        Optional<Contents> foundContents = contentsRepository.findById(contents.getDetail_Id());
+        // 데이터베이스에서 id로 Contents 객체를 찾습니다.
+        Optional<Contents> foundContents = contentsRepository.findById(Long.parseLong(contents.getId()));
 
         // 객체가 존재하는 경우 JSON으로 반환합니다.
         return foundContents
                 .map(value -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(value))
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }*/
+    }
 }
 

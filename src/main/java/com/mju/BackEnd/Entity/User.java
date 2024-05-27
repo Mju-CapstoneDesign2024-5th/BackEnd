@@ -9,13 +9,12 @@ import lombok.Setter;
 @Table(name = "user_table")
 @Getter
 @Setter
-@NoArgsConstructor
 public class User {
     @Id//기본키를 의미. 반드시 기본키를 가져야함.
     @Column(name = "user_id", nullable = false, unique = true)
     private String id;
 
-    @Column(name = "user_name", unique = true, nullable = false)
+    @Column(name = "user_name", nullable = false)
     private String userName;
 
     @Column(name = "user_gender", nullable = false)
@@ -27,3 +26,5 @@ public class User {
     @Column(name = "user_email", nullable = false)
     private String userEmail;
 }
+
+//id만

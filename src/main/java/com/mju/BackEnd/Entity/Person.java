@@ -1,4 +1,3 @@
-/*
 package com.mju.BackEnd.Entity;
 
 import jakarta.persistence.*;
@@ -22,4 +21,3 @@ public class Person {
     private int age;
 
 }
-*/

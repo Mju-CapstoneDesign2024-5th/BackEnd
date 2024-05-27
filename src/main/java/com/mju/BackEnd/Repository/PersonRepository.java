@@ -1,4 +1,3 @@
-/*
 package com.mju.BackEnd.Repository;
 
 import com.mju.BackEnd.Entity.Person;
@@ -11,5 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
+    Optional<Person> findByPersonName(String personName);
+
+    Optional<Person> findByAge(int age);
 }
-*/

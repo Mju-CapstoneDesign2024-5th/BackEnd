@@ -17,3 +17,5 @@ public class Favorites {
     @Column(name = "favorites_id", nullable = false)
     private String favoritesId; // detail_id와 연결되어야함.
 }
+
+//두개를 동시에

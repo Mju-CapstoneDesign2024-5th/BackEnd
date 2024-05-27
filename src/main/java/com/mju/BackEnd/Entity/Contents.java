@@ -38,5 +38,8 @@ public class Contents {
 
     @Column(name="A_Details")
     private String answerDetails;
+
+
 }
 
+//id만

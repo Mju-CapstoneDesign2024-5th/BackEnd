@@ -1,9 +1,9 @@
-/*
 package com.mju.BackEnd.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mju.BackEnd.Dto.TestRequest;
+import com.mju.BackEnd.Dto.TestResponse;
 import com.mju.BackEnd.Entity.Person;
 import com.mju.BackEnd.Repository.*;
 import lombok.RequiredArgsConstructor;
@@ -27,18 +27,40 @@ public class PersonController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("");
     }
 
-    @PostMapping("/users/favorites")
-    public ResponseEntity<?> personSearch(@RequestBody TestRequest id) {
+    @PostMapping("/users/find")
+    public ResponseEntity<?> personSearch(@RequestBody TestRequest testRequest) {
+        Optional<Person> optionalPerson;
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String ret="";
-        try {
-            ret = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(id);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        if (testRequest.getId()>0) {
+            optionalPerson = personRepository.findById(testRequest.getId());
+        } else if (testRequest.getPersonName() != null) {
+            optionalPerson = personRepository.findByPersonName(testRequest.getPersonName());
+        } else if (testRequest.getAge() >0 ) {
+            optionalPerson = personRepository.findByAge(testRequest.getAge());
+        } else {
+            return ResponseEntity.badRequest().body("Invalid request. Provide id, personName, or age.");
         }
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ret);
+
+        if (optionalPerson.isPresent()) {
+            Person person = optionalPerson.get();
+            TestResponse response = new TestResponse();
+            response.setId(person.getId());
+            response.setPersonName(person.getPersonName());
+            response.setAge(person.getAge());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String ret = "";
+            try {
+                ret = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(ret);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 }
 
-*/

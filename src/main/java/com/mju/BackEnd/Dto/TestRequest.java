@@ -10,9 +10,25 @@ public class TestRequest {
     public TestRequest() {}
 
     // 매개변수가 있는 생성자
-    public TestRequest(long id, String personName, int age) {
+    // Existing constructor
+//    public TestRequest(long id, String personName, int age) {
+//        this.id = id;
+//        this.personName = personName;
+//        this.age = age;
+//    }
+
+    // Constructor with only id
+    public TestRequest(long id) {
         this.id = id;
+    }
+
+    // Constructor with only personName
+    public TestRequest(String personName) {
         this.personName = personName;
+    }
+
+    // Constructor with only age
+    public TestRequest(int age) {
         this.age = age;
     }
 

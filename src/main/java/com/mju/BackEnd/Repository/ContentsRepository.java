@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContentsRepository extends JpaRepository<Contents, Long> {
+
 }
