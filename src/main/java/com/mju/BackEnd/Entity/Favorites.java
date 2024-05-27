@@ -12,18 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Favorites {
 
-    @Id
-    @Column(name = "user_id", nullable = false, unique = true)
-    private String userId;
+    @Id //기본키를 의미. 반드시 기본키를 가져야함.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;//본문 Id
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private String userId;
 
     @Column(name = "contents_id", nullable = false)
     private String contentsId;
 
-    @ManyToOne
-    @JoinColumn(name = "contents_id", referencedColumnName = "contents_id", insertable = false, updatable = false)
-    private Contents contents;
 }
