@@ -112,6 +112,20 @@ public class GenerateTemplate {
         this.id = extractID(this.srcLink);
     }
 
+    public GenerateTemplate(String id, String title, String date, String view, String description, String srcLink, String url, List<String> questionDetails, List<String> answerDetails) {
+        this.id = id;
+        this.title = title;
+        this.date = date;
+        this.view = view;
+        this.description = description;
+        this.srcLink = srcLink;
+        this.url = url;
+        this.questionDetails = questionDetails;
+        this.answerDetails = answerDetails;
+    }
+
+    public GenerateTemplate(){}
+
     public static String extractID(String url) {
         String d1id = "";
         String dirId = "";

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity //엔티티 정의
 @Table(name="contents_table") //사용하지 않으면 클래스 이름이 테이블 이름이 됨
@@ -33,13 +34,19 @@ public class Contents {
     @Column(name="pic_url")
     private String url; //url로 예상.
 
-    @Column(name="Q_Details")
-    private String questionDetails;
 
-    @Column(name="A_Details")
-    private String answerDetails;
+    public Contents(){
+    }
+    public Contents(String id, String title, String date, String view, String description, String srcLink, String url) {
+        this.id = id;
+        this.title = title;
+        this.date = date;
+        this.view = view;
+        this.description = description;
+        this.srcLink = srcLink;
+        this.url = url;
+
+    }
 
 
 }
-
-//id만

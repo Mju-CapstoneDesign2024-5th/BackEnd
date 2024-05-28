@@ -1,9 +1,10 @@
-/*
-package com.mju.BackEnd.Controller;
+package com.mju.BackEnd.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mju.BackEnd.Dto.ContentsRequest;
 import com.mju.BackEnd.Dto.FavoritesDTO;
+import com.mju.BackEnd.Dto.GenerateTemplate;
 import com.mju.BackEnd.Dto.LoginRequest;
 import com.mju.BackEnd.Entity.Favorites;
 import com.mju.BackEnd.Entity.User;
@@ -13,40 +14,36 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RestController
-public class DBController {
+@Service
+public class DBService {
 
     private final ContentsRepository contentsRepository;
     private final UserRepository userRepository;
     private final FavoritesRepository favoritesRepository;
-
     private final ObjectMapper objectMapper;
 
     // 글 내용 저장 및 찾기\
     @Autowired
-    public DBController(ContentsRepository contentsRepository, UserRepository userRepository, FavoritesRepository favoritesRepository, ObjectMapper objectMapper) {
+    public DBService(ContentsRepository contentsRepository, UserRepository userRepository, FavoritesRepository favoritesRepository, ObjectMapper objectMapper) {
         this.contentsRepository = contentsRepository;
         this.userRepository = userRepository;
         this.favoritesRepository = favoritesRepository;
         this.objectMapper = objectMapper;
     }
-    @PostMapping("/contents/save")
-    public ResponseEntity<String> contentsSave(@RequestBody Contents contents) {
+
+    public void contentsSave(Contents contents) {
         contentsRepository.save(contents);
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("success");
     }
 
-    @PostMapping("/contents/find")
-    public ResponseEntity<?> contentsSearch(@RequestBody ContentsRequest contentsRequest) {
+
+    public ResponseEntity<?> contentsSearch(ContentsRequest contentsRequest) {
 
         String userId = contentsRequest.getUserId();
 
@@ -79,15 +76,14 @@ public class DBController {
 
     // 즐겨찾기 저장 및 찾기
 
-    @PostMapping("/favorites/save")
-    public ResponseEntity<Favorites> saveFavorite(@RequestBody Favorites request) {
-        return ResponseEntity.ok(favoritesRepository.save(request));
+
+    public Favorites saveFavorite(Favorites request) {
+        return favoritesRepository.save(request);
     }
 
 
 
-    @PostMapping("/favorites/find")
-    public ResponseEntity<?> favoritesSearch(@RequestBody ContentsRequest contentsRequest) {
+    public ResponseEntity<?> favoritesSearch(ContentsRequest contentsRequest) {
         String userId = contentsRequest.getUserId();
 
         if (userId == null) {
@@ -108,24 +104,30 @@ public class DBController {
     }
     // user 저장 및 찾기
 
-    @PostMapping("/user/save")
-    public ResponseEntity<String> userSave(@RequestBody User user) {
+    public void userSave(User user) {
         userRepository.save(user);
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("success");
     }
 
-    @PostMapping("/user/login")
-    public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) {
+    public String userLogin(LoginRequest loginRequest) throws JsonProcessingException {
 
         // 데이터베이스에서 Id로 User 객체를 찾습니다.
         Optional<User> foundUser = userRepository.findByUserIdAndUserPasswd(loginRequest.getId(),loginRequest.getuserPasswd());
 
         if (foundUser.isEmpty()) {
-            return ResponseEntity.badRequest().body("Login Failed!");
+            return "Login Failed!";
         }
 
         // 객체가 존재하는 경우 JSON으로 반환합니다.
-        return objectMapper.writeValueAsString(foundUser.get());
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(foundUser.get());
+
+    }
+
+    public Mono<GenerateTemplate> addQuestion(GenerateTemplate source){
+        Contents content = new Contents(source.getID(), source.getTitle(), source.getDate(),source.getView(), source.getDescription(), source.getSrcLink(), source.getUrl());
+        contentsSave(content);
+        return Mono.fromCallable(() -> {
+            contentsRepository.save(content);
+            return source;
+        });
     }
 }
-*/

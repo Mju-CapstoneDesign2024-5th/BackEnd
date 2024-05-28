@@ -28,6 +28,7 @@ public class ImageService {
             try (InputStream in = url.openStream()) {
                 Files.copy(in, destinationPath, StandardCopyOption.REPLACE_EXISTING);
                 System.out.println("Image Saved: " + destUrl);
+                source.setUrl(destUrl);
             }
             return source;
         }).onErrorResume(e -> Mono.error(new RuntimeException("Failed to download image", e)));

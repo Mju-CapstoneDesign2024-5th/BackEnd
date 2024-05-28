@@ -25,20 +25,28 @@ public class searchController {
 
     private final WebCrawlService webCrawlService;
 
-
     private final ImageService imageService;
 
-    @Autowired
-    public searchController(ImageService imageService, OpenAIService openAIService, NService nService, ObjectMapper objectMapper, WebCrawlService webCrawlService) {
+    private final DBService dbService;
+
+
+@Autowired
+    public searchController(ImageService imageService, OpenAIService openAIService, NService nService, ObjectMapper objectMapper, WebCrawlService webCrawlService, DBService dbService) {
         this.imageService = imageService;
         this.openAIService = openAIService;
         this.nService = nService;
         this.objectMapper = objectMapper;
         this.webCrawlService = webCrawlService;
+        this.dbService = dbService;
     }
 
-    @PostMapping("/test")
-    public String justTest(@RequestBody SearchRequest request) {
+    @PostMapping("/db")
+    public String  justDB(@RequestBody GenerateTemplate source){
+        dbService.addQuestion(source);
+        return "";
+    }
+    @PostMapping("/kin")
+    public String justKin(@RequestBody SearchRequest request) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String query = request.getQuery();
@@ -67,7 +75,8 @@ public class searchController {
                                     .then(openAIService.generateResponse(description, currentIndex))
                                     .flatMap(response -> openAIService.generateImage(response, currentIndex))
                                     .flatMap(imageResponse -> webCrawlService.getData(imageResponse))
-                                    .flatMap(imageDownload-> imageService.downloadImage(imageDownload)))
+                                    .flatMap(imageDownload-> imageService.downloadImage(imageDownload))
+                                    .flatMap(addData-> dbService.addQuestion(addData)))
                             .collectList();
                 })
                 .collectList()
