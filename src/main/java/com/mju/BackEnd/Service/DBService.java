@@ -44,6 +44,39 @@ public class DBService {
         contentsRepository.save(contents);
     }
 
+    public ResponseEntity<List<GenerateTemplate>> contentsFind(List<String> ids){
+
+        List<Contents> contentList = contentsRepository.findAllById(ids);
+
+
+        List<GenerateTemplate> templateList = contentList.stream()
+                .map(content -> new GenerateTemplate(
+                        content.getId(),
+                        content.getTitle(),
+                        content.getDate(),
+                        content.getView(),
+                        content.getDescription(),
+                        content.getSrcLink(),
+                        content.getUrl(),
+                        null, // Assuming no questionDetails field in Contents, set null or appropriate value
+                        null  // Assuming no answerDetails field in Contents, set null or appropriate value
+                ))
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> {
+                            Collections.shuffle(list, new Random());
+                            return list.stream();
+                        }
+                ))
+                .collect(Collectors.toList());
+
+        if (!templateList.isEmpty()) {
+            System.out.println(templateList.get(0));
+        }
+
+        // templateList를 ResponseEntity로 반환합니다.
+        return ResponseEntity.ok(templateList);
+    }
 
     public ResponseEntity<?> contentsSearch(ContentsRequest contentsRequest) {
 
@@ -156,9 +189,13 @@ public class DBService {
                 ))
                 .limit(limiter)
                 .collect(Collectors.toList());
+
+        System.out.println(templateList.getFirst());
         return templateList;
 
     }
+
+
 
 
 }

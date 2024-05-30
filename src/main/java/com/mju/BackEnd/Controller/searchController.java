@@ -31,15 +31,17 @@ public class searchController {
 
     private final DBService dbService;
 
+    private final SimilarityService similarityService;
 
 @Autowired
-    public searchController(ImageService imageService, OpenAIService openAIService, NService nService, ObjectMapper objectMapper, WebCrawlService webCrawlService, DBService dbService) {
+    public searchController(ImageService imageService, OpenAIService openAIService, NService nService, ObjectMapper objectMapper, WebCrawlService webCrawlService, DBService dbService, SimilarityService similarityService) {
         this.imageService = imageService;
         this.openAIService = openAIService;
         this.nService = nService;
         this.objectMapper = objectMapper;
         this.webCrawlService = webCrawlService;
         this.dbService = dbService;
+        this.similarityService = similarityService;
     }
 
     @PostMapping("/db")
@@ -122,18 +124,10 @@ public class searchController {
     }
 
     @PostMapping("/sim")
-    public ResponseEntity<List<GenerateTemplate>> getSim(@RequestBody SimRequest request) throws JsonProcessingException {
-        List<GenerateTemplate> ret = dbService.printAllContents(5).stream()
-                .map(content -> {
-                    try {
-                        return webCrawlService.getData(content);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(ret);
+    public ResponseEntity<List<GenerateTemplate>> getSim(@RequestBody SimRequest id) throws JsonProcessingException {
+        return dbService.contentsFind(similarityService.Similarity(id.getContentsId()));
     }
+
 
 
 
