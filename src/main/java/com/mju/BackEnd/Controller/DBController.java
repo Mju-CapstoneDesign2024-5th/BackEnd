@@ -1,6 +1,7 @@
-/*
+
 package com.mju.BackEnd.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mju.BackEnd.Dto.ContentsRequest;
 import com.mju.BackEnd.Dto.FavoritesDTO;
@@ -115,7 +116,7 @@ public class DBController {
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) throws JsonProcessingException {
 
         // 데이터베이스에서 Id로 User 객체를 찾습니다.
         Optional<User> foundUser = userRepository.findByUserIdAndUserPasswd(loginRequest.getId(),loginRequest.getuserPasswd());
@@ -125,7 +126,7 @@ public class DBController {
         }
 
         // 객체가 존재하는 경우 JSON으로 반환합니다.
-        return objectMapper.writeValueAsString(foundUser.get());
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(foundUser.get()));
     }
 }
-*/
+
