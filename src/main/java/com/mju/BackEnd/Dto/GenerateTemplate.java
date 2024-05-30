@@ -112,7 +112,7 @@ public class GenerateTemplate {
         this.title = description.getTitle();
         this.description = description.getDescription();
         this.srcLink = description.getLink();
-        this.url = url;
+        this.url = serverAddress + "/images/" + url;
         this.id = extractID(this.srcLink);
     }
 
