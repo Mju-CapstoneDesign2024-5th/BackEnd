@@ -10,13 +10,15 @@ import org.springframework.http.*;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
 
+import java.io.IOException;
 import java.time.Duration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;;
 @RestController
 public class searchController {
     private final OpenAIService openAIService;
@@ -119,13 +121,20 @@ public class searchController {
                 });
     }
 
-/*
     @PostMapping("/sim")
-    public ResponseEntity<?> simSearch(@RequestBody SimRequest){
-
-
+    public ResponseEntity<List<GenerateTemplate>> getSim(@RequestBody SimRequest request) throws JsonProcessingException {
+        List<GenerateTemplate> ret = dbService.printAllContents(5).stream()
+                .map(content -> {
+                    try {
+                        return webCrawlService.getData(content);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ret);
     }
-*/
+
 
 
 

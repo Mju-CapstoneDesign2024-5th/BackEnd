@@ -33,7 +33,7 @@ public class frontController {
     }
     @RequestMapping("/main")
     public ResponseEntity<List<GenerateTemplate>> root() throws JsonProcessingException {
-        List<GenerateTemplate> ret = dbService.printAllContents().stream()
+        List<GenerateTemplate> ret = dbService.printAllContents(50).stream()
                 .map(content -> {
                     try {
                         return webCrawlService.getData(content);

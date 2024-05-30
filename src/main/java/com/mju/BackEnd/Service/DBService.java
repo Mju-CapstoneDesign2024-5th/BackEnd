@@ -133,7 +133,7 @@ public class DBService {
         });
     }
 
-    public List<GenerateTemplate> printAllContents() throws JsonProcessingException {
+    public List<GenerateTemplate> printAllContents(int limiter) throws JsonProcessingException {
         List<Contents> contentList = contentsRepository.findAll();
         List<GenerateTemplate> templateList = contentList.stream()
                 .map(content -> new GenerateTemplate(
@@ -154,10 +154,11 @@ public class DBService {
                             return list.stream();
                         }
                 ))
-                .limit(50)
+                .limit(limiter)
                 .collect(Collectors.toList());
         return templateList;
 
     }
+
 
 }
