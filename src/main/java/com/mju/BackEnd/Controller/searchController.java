@@ -119,6 +119,14 @@ public class searchController {
                 });
     }
 
+/*
+    @PostMapping("/sim")
+    public ResponseEntity<?> simSearch(@RequestBody SimRequest){
+
+
+    }
+*/
+
 
 
 

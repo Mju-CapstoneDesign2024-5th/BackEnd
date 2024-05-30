@@ -14,6 +14,7 @@ public class ContentsRequest {
     public ContentsRequest(String userId){
         this.userId = userId;
     }
+
     public ContentsRequest(String userId, String contentsId) {
         this.userId = userId;
         this.contentsId = contentsId;

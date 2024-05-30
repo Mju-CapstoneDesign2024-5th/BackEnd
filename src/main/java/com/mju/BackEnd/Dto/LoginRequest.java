@@ -1,9 +1,8 @@
 package com.mju.BackEnd.Dto;
 
 public class LoginRequest {
-    // UserDTO.java
 
-    private String id;
+    private String userId;
     private String userPasswd;
 
     // 기본 생성자
@@ -11,35 +10,34 @@ public class LoginRequest {
     }
 
     // 매개변수가 있는 생성자
-    public LoginRequest(String id, String userPasswd) {
-        this.id = id;
+    public LoginRequest(String userId, String userPasswd) {
+        this.userId = userId;
         this.userPasswd = userPasswd;
     }
 
     // Getter와 Setter 메서드
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getuserPasswd() {
+    public String getUserPasswd() {
         return userPasswd;
     }
 
-    public void setuserPasswd(String userPasswd) {
+    public void setUserPasswd(String userPasswd) {
         this.userPasswd = userPasswd;
     }
 
     // toString 메서드 (옵션)
     @Override
     public String toString() {
-        return "UserDTO{" +
-                "id='" + id + '\'' +
+        return "LoginRequest{" +
+                "userId='" + userId + '\'' +
                 ", userPasswd='" + userPasswd + '\'' +
                 '}';
     }
-
 }

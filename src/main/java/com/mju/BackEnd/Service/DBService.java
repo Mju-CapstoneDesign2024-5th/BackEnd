@@ -113,7 +113,7 @@ public class DBService {
     public String userLogin(LoginRequest loginRequest) throws JsonProcessingException {
 
         // 데이터베이스에서 Id로 User 객체를 찾습니다.
-        Optional<User> foundUser = userRepository.findByUserIdAndUserPasswd(loginRequest.getId(),loginRequest.getuserPasswd());
+        Optional<User> foundUser = userRepository.findByUserIdAndUserPasswd(loginRequest.getUserId(),loginRequest.getUserPasswd());
 
         if (foundUser.isEmpty()) {
             return "Login Failed!";
