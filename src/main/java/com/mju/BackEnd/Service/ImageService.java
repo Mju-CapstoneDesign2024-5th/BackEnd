@@ -1,5 +1,6 @@
 package com.mju.BackEnd.Service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.URL;
@@ -9,7 +10,8 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class ImageService {
-
+    @Value("${serverAddr}")
+    private String serverAddress;
     private static final String IMAGE_DIR = "images";
 
     public ImageService() {
@@ -30,6 +32,7 @@ public class ImageService {
                 System.out.println("Image Saved: " + destUrl);
                 source.setUrl(destUrl);
             }
+            source.setUrl(serverAddress + "/images/" + url);
             return source;
         }).onErrorResume(e -> Mono.error(new RuntimeException("Failed to download image", e)));
     }
