@@ -33,7 +33,7 @@ public class NService {
                         uriBuilder
                                 .path("/search/kin.json")
                                 .queryParam("query", query)
-                                .queryParam("display", 1)
+                                .queryParam("display", 20)
                                 .queryParam("start", 1)
                                 .queryParam("sort", sort)
                                 .build())

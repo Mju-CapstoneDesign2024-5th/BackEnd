@@ -130,4 +130,24 @@ public class DBService {
             return source;
         });
     }
+
+    public List<GenerateTemplate> printAllContents() throws JsonProcessingException {
+        List<Contents> contentList = contentsRepository.findAll();
+        List<GenerateTemplate> templateList = contentList.stream()
+                .map(content -> new GenerateTemplate(
+                        content.getId(),
+                        content.getTitle(),
+                        content.getDate(),
+                        content.getView(),
+                        content.getDescription(),
+                        content.getSrcLink(),
+                        content.getUrl(),
+                        null, // Assuming no questionDetails field in Contents, set null or appropriate value
+                        null  // Assuming no answerDetails field in Contents, set null or appropriate value
+                ))
+                .collect(Collectors.toList());
+        return templateList;
+
+    }
+
 }

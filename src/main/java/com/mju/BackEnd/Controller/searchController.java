@@ -74,7 +74,7 @@ public class searchController {
                             .flatMap(description -> Mono.delay(Duration.ofMillis(10))
                                     .then(openAIService.generateResponse(description, currentIndex))
                                     .flatMap(response -> openAIService.generateImage(response, currentIndex))
-                                    .flatMap(imageResponse -> webCrawlService.getData(imageResponse))
+                                    .flatMap(imageResponse -> webCrawlService.getDataMono(imageResponse))
                                     .flatMap(imageDownload-> imageService.downloadImage(imageDownload))
                                     .flatMap(addData-> dbService.addQuestion(addData)))
                             .collectList();

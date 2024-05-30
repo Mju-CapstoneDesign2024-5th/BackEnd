@@ -31,7 +31,7 @@ public class webCrawlController {
         KinDescription kk = new KinDescription("", url, "");
         GenerateTemplate gg = new GenerateTemplate(kk, "");
 
-        return webCrawlService.getData(gg)
+        return webCrawlService.getDataMono(gg)
                 .flatMap(result -> {
                     try {
                         String ret = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
