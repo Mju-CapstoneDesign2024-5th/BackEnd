@@ -66,7 +66,7 @@ public class DBController {
                 .collect(Collectors.toList());
 
         List<Contents> foundContentsList = contentsIds.stream()
-                .map(contentsId -> contentsRepository.findById(Long.parseLong(contentsId)))
+                .map(contentsId -> contentsRepository.findById(contentsId))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -105,7 +105,9 @@ public class DBController {
                 .map(Favorites::getContentsId)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(contentsIds);
+        List<Contents> contentsList = contentsRepository.findAllById(contentsIds);
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(contentsList);
     }
     // user 저장 및 찾기
 

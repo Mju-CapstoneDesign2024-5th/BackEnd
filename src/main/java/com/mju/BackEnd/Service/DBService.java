@@ -64,7 +64,7 @@ public class DBService {
                 .collect(Collectors.toList());
 
         List<Contents> foundContentsList = contentsIds.stream()
-                .map(contentsId -> contentsRepository.findById(Long.parseLong(contentsId)))
+                .map(contentsId -> contentsRepository.findById(contentsId))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
