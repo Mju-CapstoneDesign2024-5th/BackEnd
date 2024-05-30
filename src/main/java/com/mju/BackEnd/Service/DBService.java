@@ -17,8 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -145,6 +147,14 @@ public class DBService {
                         null, // Assuming no questionDetails field in Contents, set null or appropriate value
                         null  // Assuming no answerDetails field in Contents, set null or appropriate value
                 ))
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> {
+                            Collections.shuffle(list, new Random());
+                            return list.stream();
+                        }
+                ))
+                .limit(50)
                 .collect(Collectors.toList());
         return templateList;
 

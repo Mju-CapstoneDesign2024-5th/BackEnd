@@ -1,9 +1,13 @@
 package com.mju.BackEnd.Dto;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.List;
 
 public class GenerateTemplate {
 
+    @Value("${serverAddr}")
+    private String serverAddress;
     private String id;
     private String title;
     private String date;
@@ -119,7 +123,7 @@ public class GenerateTemplate {
         this.view = view;
         this.description = description;
         this.srcLink = srcLink;
-        this.url = url;
+        this.url = serverAddress + "/images/" + url;
         this.questionDetails = questionDetails;
         this.answerDetails = answerDetails;
     }
