@@ -17,10 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,18 +74,18 @@ public class DBService {
         return templateList;
     }
 
-    public ResponseEntity<?> contentsSearch(ContentsRequest contentsRequest) {
+    public List<GenerateTemplate> contentsSearch(ContentsRequest contentsRequest) {
 
         String userId = contentsRequest.getUserId();
 
         if (userId == null) {
-            return ResponseEntity.badRequest().body("failed");
+            return null;
         }
 
         List<Favorites> foundFavorites = favoritesRepository.findAllByUserId(userId);
 
         if (foundFavorites.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return null;
         }
 
         List<String> contentsIds = foundFavorites.stream()
@@ -102,10 +99,32 @@ public class DBService {
                 .collect(Collectors.toList());
 
         if (foundContentsList.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return null;
         }
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(foundContentsList);
+        List<GenerateTemplate> templateList = foundContentsList.stream()
+                .map(content -> new GenerateTemplate(
+                        content.getId(),
+                        content.getTitle(),
+                        content.getDate(),
+                        content.getView(),
+                        content.getDescription(),
+                        content.getSrcLink(),
+                        content.getUrl(),
+                        null, // Assuming no questionDetails field in Contents, set null or appropriate value
+                        null  // Assuming no answerDetails field in Contents, set null or appropriate value
+                ))
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> {
+                            Collections.shuffle(list, new Random());
+                            return list.stream();
+                        }
+                ))
+                .collect(Collectors.toList());
+
+        //System.out.println(templateList.getFirst());
+        return templateList;
     }
 
     // 즐겨찾기 저장 및 찾기

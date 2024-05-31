@@ -11,6 +11,7 @@ import com.mju.BackEnd.Entity.Favorites;
 import com.mju.BackEnd.Entity.User;
 import com.mju.BackEnd.Entity.Contents;
 import com.mju.BackEnd.Repository.*;
+import com.mju.BackEnd.Service.WebCrawlService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +35,18 @@ public class DBController {
     private final UserRepository userRepository;
     private final FavoritesRepository favoritesRepository;
 
+    private final WebCrawlService webCrawlService;
+
     private final ObjectMapper objectMapper;
 
     // 글 내용 저장 및 찾기\
     @Autowired
-    public DBController(ContentsRepository contentsRepository, UserRepository userRepository, FavoritesRepository favoritesRepository, ObjectMapper objectMapper) {
+    public DBController(ContentsRepository contentsRepository, UserRepository userRepository, FavoritesRepository favoritesRepository, ObjectMapper objectMapper, WebCrawlService webCrawlService) {
         this.contentsRepository = contentsRepository;
         this.userRepository = userRepository;
         this.favoritesRepository = favoritesRepository;
         this.objectMapper = objectMapper;
+        this.webCrawlService = webCrawlService;
     }
     @PostMapping("/contents/save")
     public ResponseEntity<String> contentsSave(@RequestBody Contents contents) {
@@ -50,7 +54,7 @@ public class DBController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("success");
     }
 
-    @PostMapping("/contents/find")
+ /*   @PostMapping("/contents/find")
     public ResponseEntity<?> contentsSearch(@RequestBody ContentsRequest contentsRequest) {
 
         String userId = contentsRequest.getUserId();
@@ -80,7 +84,7 @@ public class DBController {
         }
 
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(foundContentsList);
-    }
+    }*/
 
     // 즐겨찾기 저장 및 찾기
 

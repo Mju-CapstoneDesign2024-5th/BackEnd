@@ -134,8 +134,19 @@ public class searchController {
          return ResponseEntity.ok(ret);
     }
 
-
-
+    @PostMapping("/contents/find")
+    public ResponseEntity<?> contentsSearch(@RequestBody ContentsRequest contentsRequest){
+        List<GenerateTemplate> ret = dbService.contentsSearch(contentsRequest).stream()
+                .map(content -> {
+                    try {
+                        return webCrawlService.getData(content);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ret);
+    }
 
 
 
