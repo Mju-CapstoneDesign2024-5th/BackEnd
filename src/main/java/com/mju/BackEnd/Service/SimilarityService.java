@@ -25,7 +25,7 @@ public class SimilarityService {
 
     public List<String> Similarity(String target_id) throws JsonProcessingException {
         List<GenerateTemplate> contents = dbService.printAllContents(100);
-        System.out.println(contents);
+        //System.out.println(contents);
         List<Article> articles = contents.stream()
                 .map(template -> new Article(template.getID(), tokenizeDescription(template.getDescription())))
                 .collect(Collectors.toList());
@@ -96,7 +96,7 @@ public class SimilarityService {
 
     private static List<Article> getTop5SimilarArticles(String articleId, List<Article> articles, RealMatrix cosineSimMatrix) {
         int articleIndex = -1;
-        System.out.println("Article ID: " + articleId);
+        //System.out.println("Article ID: " + articleId);
         for (int i = 0; i < articles.size(); i++) {
             if (Objects.equals(articles.get(i).getId(), articleId)) {
                 articleIndex = i;

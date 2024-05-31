@@ -48,7 +48,7 @@ public class WebCrawlService {
             }
         }
 
-        System.out.println(date + " " + view);
+        //System.out.println(date + " " + view);
         questionElements.forEach(element -> questionDetails.add(element.text()));
         answerElements.forEach(element -> answerDetails.add(element.text()));
 

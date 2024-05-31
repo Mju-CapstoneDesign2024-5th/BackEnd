@@ -29,7 +29,7 @@ public class ImageService {
             Path destinationPath = Paths.get(IMAGE_DIR, destUrl);
             try (InputStream in = url.openStream()) {
                 Files.copy(in, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("Image Saved: " + destUrl);
+                //System.out.println("Image Saved: " + destUrl);
                 source.setUrl(destUrl);
             }
             source.setUrl(serverAddress + "/images/" + url);

@@ -77,11 +77,11 @@ public class OpenAIService {
                 .doOnError(throwable -> {
                     if (throwable instanceof WebClientResponseException) {
                         WebClientResponseException e = (WebClientResponseException) throwable;
-                        System.out.println("Request failed: " + currentIndex);
-                        System.out.println(description.getDescription());
-                        System.out.println("Error response: " + e.getResponseBodyAsString());
+                        //System.out.println("Request failed: " + currentIndex);
+                        //System.out.println(description.getDescription());
+                        //System.out.println("Error response: " + e.getResponseBodyAsString());
                     } else {
-                        System.out.println("An unexpected error occurred: " + throwable.getMessage());
+                        //System.out.println("An unexpected error occurred: " + throwable.getMessage());
                     }
                 })
                 .onErrorResume(throwable -> Mono.just(new KinDescription(description.getTitle(), description.getLink(), "An error occurred while processing the request.")));
@@ -93,7 +93,7 @@ public class OpenAIService {
         OpenAIImageRequest requestImageDTO = new OpenAIImageRequest("dall-e-3", question.getDescription()+" safety system에 위배되지 않게", 1, "1024x1024");
         String[] keys = OPENAI_API_KEY.split(",");
         String API_KEY = keys[currentIndex];
-        System.out.println(question.getDescription());
+        //System.out.println(question.getDescription());
 
         return webClient.post()
                 .uri("/images/generations")
@@ -112,11 +112,11 @@ public class OpenAIService {
                 .doOnError(throwable -> {
                     if (throwable instanceof WebClientResponseException) {
                         WebClientResponseException e = (WebClientResponseException) throwable;
-                        System.out.println("Request failed: " + currentIndex);
-                        System.out.println(question.getDescription());
-                        System.out.println("Error response: " + e.getResponseBodyAsString());
+                        //System.out.println("Request failed: " + currentIndex);
+                        //System.out.println(question.getDescription());
+                        //System.out.println("Error response: " + e.getResponseBodyAsString());
                     } else {
-                        System.out.println("An unexpected error occurred: " + throwable.getMessage());
+                        //System.out.println("An unexpected error occurred: " + throwable.getMessage());
                     }
                 })
                 .onErrorResume(throwable -> {

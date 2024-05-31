@@ -31,7 +31,7 @@ public class ImageController {
     public ResponseEntity<Resource> getImage(@PathVariable("id") String id) {
         try {
             Path imagePath = Paths.get("images", id + ".jpg");
-            System.out.println(imagePath);
+            //System.out.println(imagePath);
             File imageFile = imagePath.toFile();
             if (!imageFile.exists()) {
                 return ResponseEntity.notFound().build();

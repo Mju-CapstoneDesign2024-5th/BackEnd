@@ -71,7 +71,7 @@ public class DBService {
                 .collect(Collectors.toList());
 
         if (!templateList.isEmpty()) {
-            System.out.println(templateList.get(0));
+            //System.out.println(templateList.get(0));
         }
 
         // templateList를 ResponseEntity로 반환합니다.
@@ -190,7 +190,7 @@ public class DBService {
                 .limit(limiter)
                 .collect(Collectors.toList());
 
-        System.out.println(templateList.getFirst());
+        //System.out.println(templateList.getFirst());
         return templateList;
 
     }

@@ -119,7 +119,7 @@ public class DBController {
 
     @PostMapping("/user/login")
     public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) throws JsonProcessingException {
-        System.out.println(loginRequest.toString());
+        //System.out.println(loginRequest.toString());
         // 데이터베이스에서 Id로 User 객체를 찾습니다.
         Optional<User> foundUser = userRepository.findByUserIdAndUserPasswd(loginRequest.getUserId(),loginRequest.getUserPasswd());
 
