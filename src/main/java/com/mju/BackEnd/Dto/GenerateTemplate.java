@@ -123,7 +123,7 @@ public class GenerateTemplate {
         this.view = view;
         this.description = description;
         this.srcLink = srcLink;
-        this.url = serverAddress + "/images/" + url;
+        this.url = url;
         this.questionDetails = questionDetails;
         this.answerDetails = answerDetails;
     }
