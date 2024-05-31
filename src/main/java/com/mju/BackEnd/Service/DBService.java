@@ -82,7 +82,7 @@ public class DBService {
             return null;
         }
 
-        List<Favorites> foundFavorites = favoritesRepository.findAllByUserId(userId);
+        List<Favorites> foundFavorites = favoritesRepository.findByUserId(userId);
 
         if (foundFavorites.isEmpty()) {
             return null;
@@ -143,7 +143,7 @@ public class DBService {
             return ResponseEntity.badRequest().body("failed");
         }
 
-        List<Favorites> foundFavorites = favoritesRepository.findAllByUserId(userId);
+        List<Favorites> foundFavorites = favoritesRepository.findByUserId(userId);
 
         if (foundFavorites.isEmpty()) {
             return ResponseEntity.notFound().build();

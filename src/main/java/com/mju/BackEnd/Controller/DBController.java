@@ -115,7 +115,7 @@ public class DBController {
             return ResponseEntity.badRequest().body("failed");
         }
 
-        List<Favorites> foundFavorites = favoritesRepository.findAllByUserId(userId);
+        List<Favorites> foundFavorites = favoritesRepository.findByUserId(userId);
 
         if (foundFavorites.isEmpty()) {
             return ResponseEntity.notFound().build();

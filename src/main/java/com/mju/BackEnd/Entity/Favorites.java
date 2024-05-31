@@ -10,16 +10,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@IdClass(FavoritesId.class)
 public class Favorites {
 
-    @Id //기본키를 의미. 반드시 기본키를 가져야함.
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;//본문 Id
-
+    @Id //기본키를 의미. 반드시 기본키를 가져야함
     @Column(name = "user_id", nullable = false)
     private String userId;
 
+    @Id
     @Column(name = "contents_id", nullable = false)
     private String contentsId;
 
+    // Other fields and methods can be added here if needed
 }
