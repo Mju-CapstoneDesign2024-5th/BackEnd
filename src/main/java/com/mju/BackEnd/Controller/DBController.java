@@ -6,17 +6,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mju.BackEnd.Dto.ContentsRequest;
 import com.mju.BackEnd.Dto.FavoritesDTO;
 import com.mju.BackEnd.Dto.LoginRequest;
+import com.mju.BackEnd.Dto.UserNameChangeRequest;
 import com.mju.BackEnd.Entity.Favorites;
 import com.mju.BackEnd.Entity.User;
 import com.mju.BackEnd.Entity.Contents;
 import com.mju.BackEnd.Repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -85,6 +89,18 @@ public class DBController {
         return ResponseEntity.ok(favoritesRepository.save(request));
     }
 
+    // 즐겨찾기 삭제
+    @PostMapping("/favorites/delete")
+    public ResponseEntity<String> deleteFavorite(@RequestBody FavoritesDTO request) {
+        Optional<Favorites> favorite = favoritesRepository.findByUserIdAndContentsId(request.getUserId(), request.getContentsId());
+
+        if (favorite.isPresent()) {
+            favoritesRepository.delete(favorite.get());
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("deleted");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
     @PostMapping("/favorites/find")
@@ -130,5 +146,24 @@ public class DBController {
         // 객체가 존재하는 경우 JSON으로 반환합니다.
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(foundUser.get()));
     }
-}
 
+    @PostMapping("/user/changeName")
+    public ResponseEntity<String> userNameChange(@RequestBody UserNameChangeRequest request) {
+        String userId = request.getUserId();
+        String newUserName = request.getNewUserName();
+
+        // 요청된 userId로 사용자를 찾습니다.
+        Optional<User> userOptional = userRepository.findByUserId(userId);
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        // 사용자를 찾은 경우 새로운 사용자 이름을 설정하고 저장합니다.
+        User user = userOptional.get();
+        user.setUserName(newUserName);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("User name changed successfully");
+    }
+}
