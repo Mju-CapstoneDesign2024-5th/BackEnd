@@ -32,7 +32,7 @@ public class ImageService {
                 //System.out.println("Image Saved: " + destUrl);
                 source.setUrl(destUrl);
             }
-            source.setUrl(serverAddress + "/images/" + url);
+            source.setUrl(serverAddress + "/images/" + source.getUrl());
             return source;
         }).onErrorResume(e -> Mono.error(new RuntimeException("Failed to download image", e)));
     }
