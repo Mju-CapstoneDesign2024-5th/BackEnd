@@ -16,6 +16,7 @@ import java.time.Duration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;;
@@ -124,8 +125,13 @@ public class searchController {
     }
 
     @PostMapping("/sim")
-    public ResponseEntity<List<GenerateTemplate>> getSim(@RequestBody SimRequest id) throws JsonProcessingException {
-        return dbService.contentsFind(similarityService.Similarity(id.getContentsId()));
+    public ResponseEntity<List<GenerateTemplate>> getSim(@RequestBody SimRequest id) throws IOException {
+         List<GenerateTemplate> contents = dbService.contentsFind(similarityService.Similarity(id.getContentsId()));
+         List<GenerateTemplate> ret = new ArrayList<>();
+         for(GenerateTemplate item : contents){
+             ret.add(webCrawlService.getData(item));
+         }
+         return ResponseEntity.ok(ret);
     }
 
 

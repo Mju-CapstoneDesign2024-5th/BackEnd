@@ -44,7 +44,7 @@ public class DBService {
         contentsRepository.save(contents);
     }
 
-    public ResponseEntity<List<GenerateTemplate>> contentsFind(List<String> ids){
+    public List<GenerateTemplate> contentsFind(List<String> ids){
 
         List<Contents> contentList = contentsRepository.findAllById(ids);
 
@@ -74,8 +74,7 @@ public class DBService {
             //System.out.println(templateList.get(0));
         }
 
-        // templateList를 ResponseEntity로 반환합니다.
-        return ResponseEntity.ok(templateList);
+        return templateList;
     }
 
     public ResponseEntity<?> contentsSearch(ContentsRequest contentsRequest) {

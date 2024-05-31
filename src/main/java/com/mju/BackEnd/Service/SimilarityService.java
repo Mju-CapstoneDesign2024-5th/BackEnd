@@ -24,7 +24,7 @@ public class SimilarityService {
 
 
     public List<String> Similarity(String target_id) throws JsonProcessingException {
-        List<GenerateTemplate> contents = dbService.printAllContents(100);
+        List<GenerateTemplate> contents = dbService.printAllContents(1000);
         //System.out.println(contents);
         List<Article> articles = contents.stream()
                 .map(template -> new Article(template.getID(), tokenizeDescription(template.getDescription())))
