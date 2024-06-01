@@ -151,6 +151,20 @@ public class DBController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(foundUser.get()));
     }
 
+    @PostMapping("/user/find")
+    public ResponseEntity<?> userFind(@RequestBody ContentsRequest contentsRequest) throws JsonProcessingException {
+        //System.out.println(loginRequest.toString());
+        // 데이터베이스에서 Id로 User 객체를 찾습니다.
+        Optional<User> foundUser = userRepository.findByUserId(contentsRequest.getUserId());
+
+        if (foundUser.isEmpty()) {
+            return ResponseEntity.badRequest().body("find Failed!");
+        }
+
+        // 객체가 존재하는 경우 JSON으로 반환합니다.
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(foundUser.get()));
+    }
+
     @PostMapping("/user/changeName")
     public ResponseEntity<String> userNameChange(@RequestBody UserNameChangeRequest request) {
         String userId = request.getUserId();
