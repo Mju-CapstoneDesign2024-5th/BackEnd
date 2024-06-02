@@ -34,7 +34,7 @@ public class frontController {
     }
     @RequestMapping("/main")
     @ResponseBody
-    public Flux<List<GenerateTemplate>> root() throws JsonProcessingException {
+    public Mono<List<GenerateTemplate>> root() throws JsonProcessingException {
         List<GenerateTemplate> contents = dbService.printAllContents(50);
 
         List<Mono<GenerateTemplate>> monoList = contents.stream()
@@ -42,8 +42,7 @@ public class frontController {
                 .collect(Collectors.toList());
 
         return Flux.concat(monoList)
-                .collectList()
-                .flux();  // Mono<List<GenerateTemplate>>를 Flux<List<GenerateTemplate>>로 변환
+                .collectList();  // Mono<List<GenerateTemplate>> 반환
     }
 
 }
