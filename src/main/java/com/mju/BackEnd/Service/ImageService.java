@@ -26,7 +26,7 @@ public class ImageService {
 
     public Mono<GenerateTemplate> downloadImage(GenerateTemplate source) {
         return Mono.fromCallable(() -> {
-            if(Objects.equals(source.getUrl(), "http://54.180.95.157:8080/images/Failed")){
+            if(Objects.equals(source.getUrl(), "http://52.78.241.126:8080/images/Failed")){
                 return source;
             }
             URL url = new URL(source.getUrl());

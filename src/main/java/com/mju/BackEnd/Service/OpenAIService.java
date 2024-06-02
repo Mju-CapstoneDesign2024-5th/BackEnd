@@ -120,7 +120,7 @@ public class OpenAIService {
                     }
                 })
                 .onErrorResume(throwable -> {
-                    return Mono.just(new GenerateTemplate(question, "http://54.180.95.157:8080/images/Failed"));
+                    return Mono.just(new GenerateTemplate(question, "http://52.78.241.126:8080/images/Failed"));
                 });
     }
     }
