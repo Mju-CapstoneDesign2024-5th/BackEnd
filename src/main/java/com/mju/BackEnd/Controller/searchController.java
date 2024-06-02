@@ -123,7 +123,8 @@ public class searchController {
     }
 
     @PostMapping("/sim")
-    public Flux<ResponseEntity<List<GenerateTemplate>>> getSim(@RequestBody SimRequest id) {
+    @ResponseBody
+    public Flux<List<GenerateTemplate>> getSim(@RequestBody SimRequest id) {
         return Mono.fromCallable(() -> similarityService.Similarity(id.getContentsId()))
                 .flatMapMany(similarIds -> {
                     List<GenerateTemplate> contents = dbService.contentsFind(similarIds);
@@ -131,12 +132,12 @@ public class searchController {
                             .map(webCrawlService::getDataMono)
                             .collect(Collectors.toList());
                     return Flux.concat(monoList).collectList();
-                })
-                .map(ResponseEntity::ok);
+                });
     }
 
     @PostMapping("/contents/find")
-    public Mono<ResponseEntity<List<GenerateTemplate>>> contentsSearch(@RequestBody ContentsRequest contentsRequest) {
+    @ResponseBody
+    public Flux<List<GenerateTemplate>> contentsSearch(@RequestBody ContentsRequest contentsRequest) {
         List<GenerateTemplate> contents = dbService.contentsSearch(contentsRequest);
 
         List<Mono<GenerateTemplate>> monoList = contents.stream()
@@ -145,9 +146,8 @@ public class searchController {
 
         return Flux.concat(monoList)
                 .collectList()
-                .map(ResponseEntity::ok);
+                .flux();  // Mono<List<GenerateTemplate>>를 Flux<List<GenerateTemplate>>로 변환
     }
-
 
 
 }

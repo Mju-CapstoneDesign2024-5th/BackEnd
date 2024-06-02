@@ -33,7 +33,8 @@ public class frontController {
         this.objectMapper = objectMapper;
     }
     @RequestMapping("/main")
-    public Mono<ResponseEntity<List<GenerateTemplate>>> root() throws JsonProcessingException {
+    @ResponseBody
+    public Flux<List<GenerateTemplate>> root() throws JsonProcessingException {
         List<GenerateTemplate> contents = dbService.printAllContents(50);
 
         List<Mono<GenerateTemplate>> monoList = contents.stream()
@@ -42,7 +43,7 @@ public class frontController {
 
         return Flux.concat(monoList)
                 .collectList()
-                .map(ResponseEntity::ok);
+                .flux();  // Mono<List<GenerateTemplate>>를 Flux<List<GenerateTemplate>>로 변환
     }
 
 }
