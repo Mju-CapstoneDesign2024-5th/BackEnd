@@ -66,7 +66,7 @@ public class searchController {
     }
 
 
-    @PostMapping("/search")
+    @PostMapping("/toSearch")
     public Mono<ResponseEntity<String>> iSearch(@RequestBody SearchRequest request) {
         String query = request.getQuery();
         String sort = request.getSort();
