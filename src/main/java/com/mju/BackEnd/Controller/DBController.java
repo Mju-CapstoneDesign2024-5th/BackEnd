@@ -177,7 +177,7 @@ public class DBController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
-        // 사용자를 찾은 경우 새로운 사용자 이름을 설정하고 저장합니다.
+        // 사용자를 찾은 경우 새로운 사용자 이름을 설정하고 저장합니다.h
         User user = userOptional.get();
         user.setUserName(newUserName);
         userRepository.save(user);

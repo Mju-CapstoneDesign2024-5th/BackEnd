@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.*;
+import java.util.Objects;
+
 import com.mju.BackEnd.Dto.*;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +26,9 @@ public class ImageService {
 
     public Mono<GenerateTemplate> downloadImage(GenerateTemplate source) {
         return Mono.fromCallable(() -> {
+            if(Objects.equals(source.getUrl(), "http://54.180.95.157:8080/images/Failed")){
+                return source;
+            }
             URL url = new URL(source.getUrl());
             String destUrl = source.getID() + ".jpg";
             Path destinationPath = Paths.get(IMAGE_DIR, destUrl);
