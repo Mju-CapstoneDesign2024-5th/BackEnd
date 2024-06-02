@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,16 +29,31 @@ public class WebCrawlService {
     }
 
     public GenerateTemplate getData(GenerateTemplate source) throws IOException {
-        Document doc = Jsoup.connect(source.getSrcLink()).get();
+        int maxRetries = 3;
+        int attempt = 0;
+        boolean success = false;
+        Document doc = null;
+
+        while (attempt < maxRetries && !success) {
+            try {
+                doc = Jsoup.connect(source.getSrcLink()).timeout(10000000).get();
+                success = true; // 성공 시 루프 종료
+            } catch (SocketTimeoutException e) {
+                attempt++;
+                if (attempt == maxRetries) {
+                    throw e; // 최대 재시도 횟수 초과 시 예외 발생
+                }
+            }
+        }
+
         Elements questionElements = doc.select(".questionDetail");
         Elements answerElements = doc.select(".answerDetail");
         Elements infoElement = doc.select(".userInfo .infoItem");
 
-        infoElement.text();
         List<String> questionDetails = new ArrayList<>();
         List<String> answerDetails = new ArrayList<>();
-        String view="";
-        String date="";
+        String view = "";
+        String date = "";
 
         for (Element element : infoElement) {
             String text = element.text();
@@ -48,7 +64,6 @@ public class WebCrawlService {
             }
         }
 
-        //System.out.println(date + " " + view);
         questionElements.forEach(element -> questionDetails.add(element.text()));
         answerElements.forEach(element -> answerDetails.add(element.text()));
 
@@ -58,6 +73,7 @@ public class WebCrawlService {
         source.setDate(date);
         return source;
     }
+
     public Mono<GenerateTemplate> getDataMono(GenerateTemplate source) {
         return Mono.fromCallable(() -> {
             return getData(source);
