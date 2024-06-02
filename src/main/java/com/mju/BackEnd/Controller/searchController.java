@@ -10,13 +10,11 @@ import org.springframework.http.*;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
 
-import java.io.IOException;
 import java.time.Duration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;;
@@ -125,27 +123,29 @@ public class searchController {
     }
 
     @PostMapping("/sim")
-    public ResponseEntity<List<GenerateTemplate>> getSim(@RequestBody SimRequest id) throws IOException {
-         List<GenerateTemplate> contents = dbService.contentsFind(similarityService.Similarity(id.getContentsId()));
-         List<GenerateTemplate> ret = new ArrayList<>();
-         for(GenerateTemplate item : contents){
-             ret.add(webCrawlService.getData(item));
-         }
-         return ResponseEntity.ok(ret);
+    public Flux<ResponseEntity<List<GenerateTemplate>>> getSim(@RequestBody SimRequest id) {
+        return Mono.fromCallable(() -> similarityService.Similarity(id.getContentsId()))
+                .flatMapMany(similarIds -> {
+                    List<GenerateTemplate> contents = dbService.contentsFind(similarIds);
+                    List<Mono<GenerateTemplate>> monoList = contents.stream()
+                            .map(webCrawlService::getDataMono)
+                            .collect(Collectors.toList());
+                    return Flux.concat(monoList).collectList();
+                })
+                .map(ResponseEntity::ok);
     }
 
     @PostMapping("/contents/find")
-    public ResponseEntity<?> contentsSearch(@RequestBody ContentsRequest contentsRequest){
-        List<GenerateTemplate> ret = dbService.contentsSearch(contentsRequest).stream()
-                .map(content -> {
-                    try {
-                        return webCrawlService.getData(content);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+    public Mono<ResponseEntity<List<GenerateTemplate>>> contentsSearch(@RequestBody ContentsRequest contentsRequest) {
+        List<GenerateTemplate> contents = dbService.contentsSearch(contentsRequest);
+
+        List<Mono<GenerateTemplate>> monoList = contents.stream()
+                .map(webCrawlService::getDataMono)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(ret);
+
+        return Flux.concat(monoList)
+                .collectList()
+                .map(ResponseEntity::ok);
     }
 
 

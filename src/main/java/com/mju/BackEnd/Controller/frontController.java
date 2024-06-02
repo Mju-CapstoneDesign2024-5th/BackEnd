@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.*;
 import com.mju.BackEnd.Repository.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -32,17 +33,16 @@ public class frontController {
         this.objectMapper = objectMapper;
     }
     @RequestMapping("/main")
-    public ResponseEntity<List<GenerateTemplate>> root() throws JsonProcessingException {
-        List<GenerateTemplate> ret = dbService.printAllContents(50).stream()
-                .map(content -> {
-                    try {
-                        return webCrawlService.getData(content);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+    public Mono<ResponseEntity<List<GenerateTemplate>>> root() throws JsonProcessingException {
+        List<GenerateTemplate> contents = dbService.printAllContents(50);
+
+        List<Mono<GenerateTemplate>> monoList = contents.stream()
+                .map(webCrawlService::getDataMono)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(ret);
+
+        return Flux.concat(monoList)
+                .collectList()
+                .map(ResponseEntity::ok);
     }
 
 }

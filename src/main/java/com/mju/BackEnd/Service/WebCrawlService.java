@@ -1,6 +1,5 @@
 package com.mju.BackEnd.Service;
 
-import com.mju.BackEnd.Dto.*;
 import com.mju.BackEnd.Dto.GenerateTemplate;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,43 +7,48 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service("WebCrawlService")
 public class WebCrawlService {
+
+    private final WebClient webClient;
+
     @Value("${serverAddr}")
     private String serverAddress;
-    public WebCrawlService(){
 
+    public WebCrawlService(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.baseUrl("https://kin.naver.com").build();
     }
 
-    public GenerateTemplate getData(GenerateTemplate source) throws IOException {
-        int maxRetries = 3;
-        int attempt = 0;
-        boolean success = false;
-        Document doc = null;
+    public Mono<GenerateTemplate> getDataMono(GenerateTemplate source) {
+        return webClient.get()
+                .uri(source.getSrcLink())
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+                .retrieve()
+                .bodyToMono(String.class)
+                .flatMap(body -> {
+                    try {
+                        return Mono.just(parseHtml(body, source));
+                    } catch (IOException e) {
+                        return Mono.error(e);
+                    }
+                })
+                .retryWhen(Retry.backoff(Long.MAX_VALUE, Duration.ofSeconds(1))
+                        .filter(throwable -> throwable instanceof WebClientResponseException &&
+                                ((WebClientResponseException) throwable).getStatusCode().value() == 429));
+    }
 
-        while (attempt < maxRetries && !success) {
-            try {
-                doc = Jsoup.connect(source.getSrcLink()).timeout(10000000).get();
-                success = true; // 성공 시 루프 종료
-            } catch (SocketTimeoutException e) {
-                attempt++;
-                if (attempt == maxRetries) {
-                    throw e; // 최대 재시도 횟수 초과 시 예외 발생
-                }
-            }
-        }
+    private GenerateTemplate parseHtml(String html, GenerateTemplate source) throws IOException {
+        Document doc = Jsoup.parse(html);
 
         Elements questionElements = doc.select(".questionDetail");
         Elements answerElements = doc.select(".answerDetail");
@@ -72,11 +76,5 @@ public class WebCrawlService {
         source.setView(view);
         source.setDate(date);
         return source;
-    }
-
-    public Mono<GenerateTemplate> getDataMono(GenerateTemplate source) {
-        return Mono.fromCallable(() -> {
-            return getData(source);
-        });
     }
 }
