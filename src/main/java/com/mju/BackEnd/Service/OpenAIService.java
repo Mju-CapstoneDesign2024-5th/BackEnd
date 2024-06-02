@@ -23,6 +23,8 @@ import java.util.List;
 
 @Service("OpenAIService")
 public class OpenAIService {
+    @Value("${serverAddr}")
+    private String serverAddress;
     private final WebClient webClient;
     private static final String OPENAI_API_URL = "https://api.openai.com/v1";
 
@@ -120,7 +122,7 @@ public class OpenAIService {
                     }
                 })
                 .onErrorResume(throwable -> {
-                    return Mono.just(new GenerateTemplate(question, "http://52.78.241.126:8080/images/Failed"));
+                    return Mono.just(new GenerateTemplate(question, serverAddress +"/images/Failed"));
                 });
     }
     }
